@@ -8,6 +8,7 @@
 // @icon            https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/icon.png
 // @include         https://www.youtube.com/shorts/*
 // @include         http://www.youtube.com/shorts/*
+// @updateURL       https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/youtube_no_shorts.user.js
 // ==/UserScript==
 
 window.location = document.URL.replace("shorts/", "watch?v=");
