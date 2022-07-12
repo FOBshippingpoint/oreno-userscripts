@@ -4,8 +4,8 @@ My userscripts.
 
 ## Available Userscripts
 
-- [[YouTube No Shorts]]: Redirects to the original UI of the YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/youtube_no_shorts.user.js)
-- [[YouTube Screenshot]]: Take a screenshot of YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/youtube_screenshot.user.js)
+- [YouTube No Shorts](https://github.com/FOBshippingpoint/oreno-userscripts/wiki/YouTube-No-Shorts): Redirects to the original UI of the YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/youtube_no_shorts.user.js)
+- [YouTube Screenshot](https://github.com/FOBshippingpoint/oreno-userscripts/wiki/YouTube-Screenshot): Take a screenshot of YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/youtube_screenshot.user.js)
 
 See [Wiki](https://github.com/FOBshippingpoint/oreno-userscripts/wiki) for more information.
 
