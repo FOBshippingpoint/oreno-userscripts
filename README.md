@@ -2,10 +2,16 @@
 
 My userscripts.
 
-## Scripts
+## Available Userscripts
 
-- youtube-no-shorts: Redirects to the original UI of the YouTube video.
-- youtube-screenshot: Take a screenshot of YouTube video.
+- [[YouTube No Shorts]]: Redirects to the original UI of the YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/youtube_no_shorts.user.js)
+- [[YouTube Screenshot]]: Take a screenshot of YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/youtube_screenshot.user.js)
+
+See [Wiki](https://github.com/FOBshippingpoint/oreno-userscripts/wiki) for more information.
+
+## How to use?
+
+Add violentmonkey/greasemonkey/tampermonkey to your favorite browser, and click `install` link to add userscript.
 
 ## Userscript
 
@@ -19,7 +25,7 @@ My userscripts.
 - [Greasemonkey Hacks by Mark Pilgrim](https://www.oreilly.com/library/view/greasemonkey-hacks/0596101651/ch01.html)
 - [Tag URI](http://www.taguri.org/)
 
-## API
+### API
 
 - [GM_* APIs](https://violentmonkey.github.io/api/gm/)
 
