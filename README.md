@@ -1,5 +1,8 @@
 # OReNo Userscripts
 
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+![科皓不要](https://img.shields.io/badge/%E7%A7%91%E7%9A%93-%E4%B8%8D%E8%A6%81-orange)
+
 My userscripts.
 
 ## Available Userscripts
@@ -11,7 +14,7 @@ See [Wiki](https://github.com/FOBshippingpoint/oreno-userscripts/wiki) for more 
 
 ## How to use?
 
-Add violentmonkey/greasemonkey/tampermonkey to your favorite browser, and click `install` link to add userscript.
+Add Violentmonkey/Greasemonkey/Tampermonkey web extension to your favorite browser, and click `install` link to add userscript.
 
 ## Userscript
 
