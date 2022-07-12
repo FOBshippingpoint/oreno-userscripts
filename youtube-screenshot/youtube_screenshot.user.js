@@ -1,23 +1,31 @@
 // ==UserScript==
-// @name            YouTube Screenshot
-// @author          FOBshippingpoint
-// @namespace       https://github.com/FOBshippingpoint/oreno-userscripts
-// @description     Take a screenshot of YouTube video.
-// @license         MIT
-// @version	        0.1
-// @icon            https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/icon.png
-// @include         https://www.youtube.com/watch*
-// @include         http://www.youtube.com/watch*
-// @updateURL       https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/youtube_screenshot.user.js
-// @grant           GM.registerMenuCommand
-// @grant           GM.notification
+// @name                  YouTube Screenshot
+// @author                FOBshippingpoint
+// @namespace             https://github.com/FOBshippingpoint/oreno-userscripts
+// @description           Take a screenshot of YouTube video.
+// @description:zh-TW     YouTube影片畫面截圖。
+// @license               MIT
+// @version               1.0
+// @icon                  https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/icon.png
+// @include               https://www.youtube.com/watch*
+// @include               http://www.youtube.com/watch*
+// @updateURL             https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/youtube_screenshot.user.js
+// @supportURL            https://github.com/FOBshippingpoint/oreno-userscripts/issues
+// @homepageURL           https://github.com/FOBshippingpoint/oreno-userscripts#readme
+// @grant                 GM.registerMenuCommand
+// @grant                 GM.notification
 // ==/UserScript==
+
+/**
+ * A number, or a string containing a number.
+ * @typedef {('png'|'jpeg'|'gif')} FileType - MIME image file types.
+ */
 
 const isClipboardAvailable = window.hasOwnProperty('ClipboardItem');
 
 /**
  * GM.notification wrapper.
- * @param {(object|string)} options
+ * @param {(Object|string)} options - Notification text or GM_notification options
  */
 function notification(options) {
   if (typeof options === 'string') {
@@ -35,40 +43,51 @@ function notification(options) {
 
 /**
  * Take a screenshot of current video frame.
- * @param {('png'|'jpeg'|'gif')} fileType
+ * @param {FileType} [fileType='jpeg']
+ * @param {('copy'|'download')} [action='copy'] - How to save screenshot.
  */
-function screenshot(fileType = 'png') {
+function screenshot(fileType = 'jpeg', action = 'copy') {
   const vid = document.querySelector('.video-stream');
   const canvas = document.createElement('canvas');
-  document.querySelector('head').append(canvas);
 
   canvas.width = vid.videoWidth;
   canvas.height = vid.videoHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(vid, 0, 0);
+  canvas.getContext('2d').drawImage(vid, 0, 0);
 
-  if (isClipboardAvailable) {
-    canvas.toBlob(writeClipImg, fileType);
-  } else {
-    openImgInNewTab(canvas, fileType);
+  if (action === 'copy') {
+    if (isClipboardAvailable) {
+      canvas.toBlob(writeClipImg, fileType);
+    } else {
+      openImgInNewTab(canvas, fileType);
+    }
+  } else if (action === 'download') {
+    downloadImg(canvas, fileType);
   }
+}
+
+/**
+ * Create filename from image size.
+ * @param {number} width - Image width.
+ * @param {number} height - Image height.
+ * @param {FileType} fileType
+ * @return {string} The image filename.
+ */
+function createFilename(width, height, fileType) {
+  const videoTitle = document.title.replace(' - YouTube', '');
+  let filename = width + 'x' + height + '_';
+  filename += videoTitle.replace(/[\\\/:"*?<>|]+/g, '_') + '.' + fileType;
+  return filename;
 }
 
 /**
  * Open image in new tab.
  * @param {HTMLCanvasElement} canvas
- * @param {('png'|'jpeg'|'gif')} fileType
+ * @param {FileType} fileType
  */
 function openImgInNewTab(canvas, fileType) {
   const w = window.open('', '_blank');
   const dataURL = canvas.toDataURL('image/' + fileType);
-  const title =
-    canvas.width +
-    'x' +
-    canvas.height +
-    '_' +
-    document.title.replace(' - YouTube', '');
+  const title = createFilename(canvas.width, canvas.height, fileType);
   w.document.write(
     '<html><head><title>' +
       title +
@@ -97,6 +116,20 @@ async function writeClipImg(blob) {
 }
 
 /**
+ * Download image.
+ * @param {HTMLCanvasElement} canvas
+ * @param {FileType} fileType
+ */
+function downloadImg(canvas, fileType) {
+  filename = createFilename(canvas.width, canvas.height, fileType);
+  const anchor = document.createElement('a');
+  anchor.href = canvas.toDataURL('image/' + fileType);
+  anchor.download = filename;
+  anchor.click();
+  notification('File "' + filename + '" saved.');
+}
+
+/**
  * Add screenshot button to youtube player button list.
  */
 function addScreenshotBtn() {
@@ -118,13 +151,36 @@ function addScreenshotBtn() {
     .before(screenshotBtn);
   screenshotBtn.addEventListener('click', screenshot);
   document.addEventListener('keyup', (e) => {
-    if (!e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.key === 's') {
-      screenshot();
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    switch (e.key) {
+      case 's':
+        screenshot('jpeg', 'copy');
+        break;
+      case 'd':
+        screenshot('jpeg', 'download');
+        break;
     }
   });
 }
 
-GM.registerMenuCommand('Screenshot/png', () => screenshot('png'));
-GM.registerMenuCommand('Screenshot/jpeg', () => screenshot('jpeg'));
-GM.registerMenuCommand('Screenshot/gif', () => screenshot('gif'));
+/**
+ * Capitalize a word.
+ * @param {string} text
+ * @return {string} A capitalized string.
+ */
+function capitalize(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+const fileTypes = ['png', 'jpeg', 'gif'];
+const actions = ['copy', 'download'];
+actions.forEach((actions) => {
+  fileTypes.forEach((fileType) => {
+    GM.registerMenuCommand(
+      capitalize(actions) + ' screenshot/' + fileType,
+      () => screenshot(fileType, actions)
+    );
+  });
+});
+
 addScreenshotBtn();
