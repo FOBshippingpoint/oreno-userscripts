@@ -7,7 +7,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1"
   },
-  "name": "user_script",
+  "name": "oreno-userscripts",
   "description": "My userscripts.",
   "version": "1.0.0",
   "main": ".eslintrc.js",
@@ -100,8 +100,8 @@
     "url": "git+https://github.com/FOBshippingpoint/oreno-userscripts.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "FOBshippingpoint",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/FOBshippingpoint/oreno-userscripts/issues"
   },
