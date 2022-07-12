@@ -11,4 +11,4 @@
 // @updateURL       https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/youtube_no_shorts.user.js
 // ==/UserScript==
 
-window.location = document.URL.replace("shorts/", "watch?v=");
+window.location = document.URL.replace('shorts/', 'watch?v=');
