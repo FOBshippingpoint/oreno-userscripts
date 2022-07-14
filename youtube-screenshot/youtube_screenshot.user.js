@@ -5,7 +5,7 @@
 // @description           Take a screenshot of YouTube video.
 // @description:zh-TW     YouTube影片畫面截圖。
 // @license               MIT
-// @version               1.0
+// @version               1.0.1
 // @icon                  https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/icon.png
 // @include               https://www.youtube.com/watch*
 // @include               http://www.youtube.com/watch*
@@ -130,6 +130,20 @@ function downloadImg(canvas, fileType) {
 }
 
 /**
+ * Check if the user is focusing on input-like elements.
+ * @return {boolean} Is the user about to type
+ */
+function isAboutToType() {
+  // #contenteditable-root is comment input, input.ytd-searchbox is the search bar on the top of the page.
+  const inputEls = ['#contenteditable-root', 'input.ytd-searchbox'].reduce(
+    (prev, queryString) => [...prev, ...document.querySelectorAll(queryString)],
+    []
+  );
+  const isActive = (el) => el === document.activeElement;
+  return inputEls.some(isActive);
+}
+
+/**
  * Add screenshot button to youtube player button list.
  */
 function addScreenshotBtn() {
@@ -152,6 +166,7 @@ function addScreenshotBtn() {
   screenshotBtn.addEventListener('click', screenshot);
   document.addEventListener('keyup', (e) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    if (isAboutToType()) return;
     switch (e.key) {
       case 's':
         screenshot('jpeg', 'copy');
