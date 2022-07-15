@@ -9,6 +9,7 @@ My userscripts.
 
 - [YouTube No Shorts](https://github.com/FOBshippingpoint/oreno-userscripts/wiki/YouTube-No-Shorts): Redirects to the original UI of the YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-no-shorts/youtube_no_shorts.user.js)
 - [YouTube Screenshot](https://github.com/FOBshippingpoint/oreno-userscripts/wiki/YouTube-Screenshot): Take a screenshot of YouTube video. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/youtube-screenshot/youtube_screenshot.user.js)
+- [zh Wiki No Mobile](https://github.com/FOBshippingpoint/oreno-userscripts/wiki/zh-Wiki-No-Mobile): Solve the recent problem that the Chinese Wikipedia page is displayed as mobile version. [(install)](https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/zh-wiki-no-mobile/zh_wiki_no_mobile.user.js)
 
 See [Wiki](https://github.com/FOBshippingpoint/oreno-userscripts/wiki) for more information.
 
