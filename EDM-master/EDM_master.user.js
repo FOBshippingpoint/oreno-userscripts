@@ -3,6 +3,9 @@
 // @namespace   Violentmonkey Scripts
 // @match       https://*.edu.tw/*
 // @include     https://linker.tw/y_ba/*
+// @exclude     https://lib.ncu.edu.tw/*
+// @exclude     https://ncueeclass.ncu.edu.tw/*
+// @exclude     https://portal.ncu.edu.tw/*
 // @grant       none
 // @version     1.0
 // @author      -
@@ -40,7 +43,7 @@ GM_addStyle(`
   background-color: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   padding: 10px;
-  max-height: 50vh;
+  max-height: 500px;
 }
 
 .teacher-search input[type="text"] {
@@ -54,7 +57,18 @@ GM_addStyle(`
   overflow: scroll;
   height: auto;
   min-height: 150px;
-  position:relative;
+  position: relative;
+}
+
+.my-table-container table {
+  position: relative;
+}
+
+.my-table-container th {
+  background-color: white;
+  border-bottom: 2px solid black;
+  position: sticky;
+  top: 0;
 }
 
 .my-teacher {
@@ -98,419 +112,436 @@ GM_addStyle(`
 .not-found {
   text-decoration: line-through;
 }
+
+.now-focus {
+  --borderWidth: 3px;
+  position: relative;
+  border-radius: var(--borderWidth);
+  justify-content: center;
+}
+.now-focus:after {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--borderWidth));
+  left: calc(-1 * var(--borderWidth));
+  height: calc(100% + var(--borderWidth) * 2);
+  width: calc(100% + var(--borderWidth) * 2);
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+  border-radius: calc(2 * var(--borderWidth));
+  z-index: -1;
+  animation: animatedgradient 3s ease alternate infinite;
+  background-size: 300% 300%;
+}
+
+
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
 `);
 
 const surnames = [
-  '樊',
-  '薛',
-  '刁',
-  '丁',
-  '上官',
-  '公羊',
-  '公冶',
-  '公孫',
-  '山',
-  '弓',
-  '于',
-  '太叔',
-  '令狐',
-  '司空',
-  '司徒',
-  '勾',
-  '元',
-  '公',
-  '仇',
-  '井',
-  '方',
-  '水',
-  '尤',
-  '尹',
-  '卞',
-  '毋',
-  '文',
-  '孔',
-  '毛',
-  '王',
-  '牛',
-  '巴',
-  '戈',
-  '司馬',
-  '申屠',
-  '仲孫',
-  '宇文',
-  '包',
-  '左',
-  '弘',
-  '平',
-  '石',
-  '白',
-  '甘',
-  '申',
-  '皮',
-  '田',
-  '司',
-  '史',
-  '充',
-  '古',
-  '宗政',
-  '東方',
-  '長孫',
-  '夏侯',
-  '仲',
-  '全',
-  '任',
-  '危',
-  '印',
-  '向',
-  '匡',
-  '安',
-  '成',
-  '朱',
-  '米',
-  '艾',
-  '羊',
-  '江',
-  '池',
-  '曲',
-  '仰',
-  '伍',
-  '伊',
-  '伏',
-  '徐離',
-  '軒轅',
-  '單於',
-  '萬俟',
-  '冷',
-  '何',
-  '李',
-  '杜',
-  '沈',
-  '汲',
-  '沃',
-  '束',
-  '沙',
-  '步',
-  '汪',
-  '辛',
-  '阮',
-  '車',
-  '邢',
-  '貝',
-  '利',
-  '別',
-  '吳',
-  '呂',
-  '岑',
-  '宋',
-  '扶',
-  '那',
-  '聞人',
-  '慕容',
-  '歐陽',
-  '諸葛',
-  '居',
-  '尚',
-  '宗',
-  '於',
-  '房',
-  '松',
-  '林',
-  '明',
-  '易',
-  '杭',
-  '東',
-  '昌',
-  '武',
-  '牧',
-  '空',
-  '花',
-  '芮',
-  '邱',
-  '金',
-  '邴',
-  '邰',
-  '邵',
-  '卓',
-  '和',
-  '周',
-  '孟',
-  '幸',
-  '季',
-  '屈',
-  '竺',
-  '皇甫',
-  '尉遲',
-  '淳于',
-  '施',
-  '查',
-  '柯',
-  '柏',
-  '柳',
-  '洪',
-  '段',
-  '相',
-  '秋',
-  '胡',
-  '紀',
-  '紅',
-  '苗',
-  '茅',
-  '郎',
-  '後',
-  '封',
-  '宣',
-  '侯',
-  '卻',
-  '姚',
-  '計',
-  '姬',
-  '唐',
-  '倪',
-  '夏',
-  '奚',
-  '師',
-  '宰',
-  '庫',
-  '席',
-  '家',
-  '容',
-  '孫',
-  '徐',
-  '時',
-  '晏',
-  '桑',
-  '桂',
-  '柴',
-  '烏',
-  '珠',
-  '班',
-  '益',
-  '祖',
-  '祝',
-  '秦',
-  '翁',
-  '耿',
-  '能',
-  '荊',
-  '茹',
-  '荀',
-  '袁',
-  '貢',
-  '馬',
-  '高',
-  '郗',
-  '浦',
-  '郝',
-  '國',
-  '堵',
-  '宿',
-  '屠',
-  '巢',
-  '常',
-  '康',
-  '張',
-  '強',
-  '從',
-  '戚',
-  '曹',
-  '梁',
-  '梅',
-  '畢',
-  '盛',
-  '符',
-  '終',
-  '習',
-  '莘',
-  '莫',
-  '莊',
-  '許',
-  '通',
-  '連',
-  '郭',
-  '都',
-  '陳',
-  '陸',
-  '陶',
-  '章',
-  '魚',
-  '麻',
-  '崔',
-  '庾',
-  '淩',
-  '勞',
-  '單',
-  '富',
-  '惠',
-  '景',
-  '曾',
-  '湯',
-  '焦',
-  '程',
-  '童',
-  '舒',
-  '華',
-  '費',
-  '賀',
-  '越',
-  '鈕',
-  '閔',
-  '陽',
-  '隆',
-  '雲',
-  '項',
-  '須',
-  '馮',
-  '黃',
-  '傅',
-  '喬',
-  '彭',
-  '幹',
-  '廉',
-  '慎',
-  '楊',
-  '溫',
-  '滑',
-  '萬',
-  '葉',
-  '葛',
-  '董',
-  '解',
-  '詹',
-  '路',
-  '農',
-  '遊',
-  '雷',
-  '鄔',
-  '隗',
-  '溥',
-  '裘',
-  '壽',
-  '廖',
-  '榮',
-  '滿',
-  '熊',
-  '管',
-  '聞',
-  '蒙',
-  '蒲',
-  '蒼',
-  '裴',
-  '褚',
-  '趙',
-  '鳳',
-  '齊',
-  '劉',
-  '廣',
-  '慕',
-  '暴',
-  '樂',
-  '歐',
-  '滕',
-  '穀',
-  '範',
-  '蔚',
-  '蔣',
-  '蔡',
-  '蔔',
-  '蓬',
-  '衛',
-  '談',
-  '諸',
-  '鄭',
-  '養',
-  '餘',
-  '魯',
-  '潘',
-  '黎',
-  '曆',
-  '燕',
-  '盧',
-  '蕭',
-  '融',
-  '衡',
-  '賴',
-  '錢',
-  '駱',
-  '龍',
-  '霍',
-  '鮑',
-  '儲',
-  '應',
-  '戴',
-  '薑',
-  '薊',
-  '謝',
-  '鍾',
-  '韓',
-  '簡',
-  '聶',
-  '藍',
-  '豐',
-  '雙',
-  '顏',
-  '魏',
-  '懷',
-  '羅',
-  '邊',
-  '關',
-  '瞿',
-  '龐',
-  '嚴',
-  '蘇',
-  '饒',
-  '鹹',
-  '黨',
-  '顧',
-  '酆',
-  '權',
-  '酈',
-  '龔',
+  "樊",
+  "薛",
+  "刁",
+  "丁",
+  "上官",
+  "公羊",
+  "公冶",
+  "公孫",
+  "山",
+  "弓",
+  "于",
+  "太叔",
+  "令狐",
+  "司空",
+  "司徒",
+  "勾",
+  "元",
+  "公",
+  "仇",
+  "井",
+  "方",
+  "水",
+  "尤",
+  "尹",
+  "卞",
+  "毋",
+  "文",
+  "孔",
+  "毛",
+  "王",
+  "牛",
+  "巴",
+  "戈",
+  "司馬",
+  "申屠",
+  "仲孫",
+  "宇文",
+  "包",
+  "左",
+  "弘",
+  "平",
+  "石",
+  "白",
+  "甘",
+  "申",
+  "皮",
+  "田",
+  "司",
+  "史",
+  "充",
+  "古",
+  "宗政",
+  "東方",
+  "長孫",
+  "夏侯",
+  "仲",
+  "全",
+  "任",
+  "危",
+  "印",
+  "向",
+  "匡",
+  "安",
+  "成",
+  "朱",
+  "米",
+  "艾",
+  "羊",
+  "江",
+  "池",
+  "曲",
+  "仰",
+  "伍",
+  "伊",
+  "伏",
+  "徐離",
+  "軒轅",
+  "單於",
+  "萬俟",
+  "冷",
+  "何",
+  "李",
+  "杜",
+  "沈",
+  "汲",
+  "沃",
+  "束",
+  "沙",
+  "步",
+  "汪",
+  "辛",
+  "阮",
+  "車",
+  "邢",
+  "貝",
+  "利",
+  "別",
+  "吳",
+  "呂",
+  "岑",
+  "宋",
+  "扶",
+  "那",
+  "聞人",
+  "慕容",
+  "歐陽",
+  "諸葛",
+  "居",
+  "尚",
+  "宗",
+  "於",
+  "房",
+  "松",
+  "林",
+  "明",
+  "易",
+  "杭",
+  "東",
+  "昌",
+  "武",
+  "牧",
+  "空",
+  "花",
+  "芮",
+  "邱",
+  "金",
+  "邴",
+  "邰",
+  "邵",
+  "卓",
+  "和",
+  "周",
+  "孟",
+  "幸",
+  "季",
+  "屈",
+  "竺",
+  "皇甫",
+  "尉遲",
+  "淳于",
+  "施",
+  "查",
+  "柯",
+  "柏",
+  "柳",
+  "洪",
+  "段",
+  "相",
+  "秋",
+  "胡",
+  "紀",
+  "紅",
+  "苗",
+  "茅",
+  "郎",
+  "後",
+  "封",
+  "宣",
+  "侯",
+  "卻",
+  "姚",
+  "計",
+  "姬",
+  "唐",
+  "倪",
+  "夏",
+  "奚",
+  "師",
+  "宰",
+  "庫",
+  "席",
+  "家",
+  "容",
+  "孫",
+  "徐",
+  "時",
+  "晏",
+  "桑",
+  "桂",
+  "柴",
+  "烏",
+  "珠",
+  "班",
+  "益",
+  "祖",
+  "祝",
+  "秦",
+  "翁",
+  "耿",
+  "能",
+  "荊",
+  "茹",
+  "荀",
+  "袁",
+  "貢",
+  "馬",
+  "高",
+  "郗",
+  "浦",
+  "郝",
+  "國",
+  "堵",
+  "宿",
+  "屠",
+  "巢",
+  "常",
+  "康",
+  "張",
+  "強",
+  "從",
+  "戚",
+  "曹",
+  "梁",
+  "梅",
+  "畢",
+  "盛",
+  "符",
+  "終",
+  "習",
+  "莘",
+  "莫",
+  "莊",
+  "許",
+  "通",
+  "連",
+  "郭",
+  "都",
+  "陳",
+  "陸",
+  "陶",
+  "章",
+  "魚",
+  "麻",
+  "崔",
+  "庾",
+  "淩",
+  "勞",
+  "單",
+  "富",
+  "惠",
+  "景",
+  "曾",
+  "湯",
+  "焦",
+  "程",
+  "童",
+  "舒",
+  "華",
+  "費",
+  "賀",
+  "越",
+  "鈕",
+  "閔",
+  "陽",
+  "隆",
+  "雲",
+  "項",
+  "須",
+  "馮",
+  "黃",
+  "傅",
+  "喬",
+  "彭",
+  "幹",
+  "廉",
+  "慎",
+  "楊",
+  "溫",
+  "滑",
+  "萬",
+  "葉",
+  "葛",
+  "董",
+  "解",
+  "詹",
+  "路",
+  "農",
+  "遊",
+  "雷",
+  "鄔",
+  "隗",
+  "溥",
+  "裘",
+  "壽",
+  "廖",
+  "榮",
+  "滿",
+  "熊",
+  "管",
+  "聞",
+  "蒙",
+  "蒲",
+  "蒼",
+  "裴",
+  "褚",
+  "趙",
+  "鳳",
+  "齊",
+  "劉",
+  "廣",
+  "慕",
+  "暴",
+  "樂",
+  "歐",
+  "滕",
+  "穀",
+  "範",
+  "蔚",
+  "蔣",
+  "蔡",
+  "蔔",
+  "蓬",
+  "衛",
+  "談",
+  "諸",
+  "鄭",
+  "養",
+  "餘",
+  "魯",
+  "潘",
+  "黎",
+  "曆",
+  "燕",
+  "盧",
+  "蕭",
+  "融",
+  "衡",
+  "賴",
+  "錢",
+  "駱",
+  "龍",
+  "霍",
+  "鮑",
+  "儲",
+  "應",
+  "戴",
+  "薑",
+  "薊",
+  "謝",
+  "鍾",
+  "韓",
+  "簡",
+  "聶",
+  "藍",
+  "豐",
+  "雙",
+  "顏",
+  "魏",
+  "懷",
+  "羅",
+  "邊",
+  "關",
+  "瞿",
+  "龐",
+  "嚴",
+  "蘇",
+  "饒",
+  "鹹",
+  "黨",
+  "顧",
+  "酆",
+  "權",
+  "酈",
+  "龔",
 ];
 
 // Select all elements containing the word "師資"
-var elements = $('*').filter(function () {
+var elements = $("*").filter(function () {
   return /師資/.test($(this).clone().children().remove().end().text());
 });
 
-elements.addClass('my-highlighted');
+elements.addClass("my-highlighted");
 
 class ResultTable {
   constructor() {
-    this.result = '';
-  }
-
-  addRow(isFound, mail) {
-    if (this.result !== '') {
-      this.result += '\n';
-    }
-    if (isFound) {
-      if (mail === '') {
-        this.result += '\t\t找不到email';
-      } else {
-        this.result += `${mail}\t\t`;
-      }
-    } else {
-      this.result += `\tX\t`;
-    }
-    return this.result;
+    this.result = "";
   }
 
   addTeacher(teacher) {
     const t = teacher;
     // Email	備註(查無資料:X；新增:V)	備註
     // mail   X, V(新)                  找不到mail, 升等
-    const mail = t.mail ?? '';
-    const check = t.isNew ? 'V' : t.isFound ? '' : 'X';
-    let remark = '';
+    const mail = t.mail ?? "";
+    const check = t.isNew ? "V" : t.isFound ? "" : "X";
+    let remark = "";
     if (t.isFound) {
-      remark += t.mail ? '' : '找不到email';
+      remark += t.mail ? "" : "找不到email";
     } else {
-      remark = '';
+      remark = "";
     }
 
-    const row = [mail, check, remark].join('\t');
-    if (this.result !== '') {
-      this.result += '\n';
+    const row = [mail, check, remark].join("\t");
+    if (this.result !== "") {
+      this.result += "\n";
     }
     this.result += row;
   }
@@ -520,21 +551,21 @@ class ResultTable {
 
     // 職稱	    教師姓名     專長領域	  系所網址  Email	    備註(查無資料:X；新增:V)	備註
     // title    name                              mail      V(新)
-    const title = t.title ?? '';
-    const name = t.name ?? '';
-    const mail = t.mail ?? '';
-    const check = 'V';
-    const remark = '';
+    const title = t.title ?? "";
+    const name = t.name ?? "";
+    const mail = t.mail ?? "";
+    const check = "V";
+    const remark = "";
 
-    const row = [title, name, '', '', mail, check, remark].join('\t');
-    if (this.result !== '') {
-      this.result += '\n';
+    const row = [title, name, "", "", mail, check, remark].join("\t");
+    if (this.result !== "") {
+      this.result += "\n";
     }
     this.result += row;
   }
 
   clear() {
-    this.result = '';
+    this.result = "";
   }
 
   copy() {
@@ -544,29 +575,24 @@ class ResultTable {
 
 // teacher
 // create the search input and results list
-var searchInput = $('<input>', {
-  type: 'text',
-  placeholder: '搜尋老師（空格分隔）',
-  onfocus: 'this.select()',
+var searchInput = $("<input>", {
+  type: "text",
+  placeholder: "搜尋老師（空格分隔）",
+  onfocus: "this.select()",
 });
-
-const mailRegex = new RegExp(
-  '^([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,})$',
-  'i'
-);
 
 // create the search container element and append the input and results list
 const teacherTable = new ResultTable();
 const newTeacherTable = new ResultTable();
-var searchContainer = $('<div>', { class: 'teacher-search' });
-var copyTableButton = $('<button/>', {
-  text: '複製已有教師',
+var searchContainer = $("<div>", { class: "teacher-search" });
+var copyTableButton = $("<button/>", {
+  text: "複製已有教師",
   click: function () {
     teacherTable.copy();
   },
 });
-var copyNewTableButton = $('<button/>', {
-  text: '複製新進教師',
+var copyNewTableButton = $("<button/>", {
+  text: "複製新進教師",
   click: function () {
     newTeacherTable.copy();
   },
@@ -574,26 +600,26 @@ var copyNewTableButton = $('<button/>', {
 searchContainer.append(searchInput);
 searchContainer.append(copyTableButton);
 searchContainer.append(
-  "<div class='my-table-container'><table><tbody id='search-results'></tbody></table></div>"
+  "<div class='my-table-container'><table><tbody id='search-results'></tbody></table></div>",
 );
 searchContainer.append(copyNewTableButton);
 searchContainer.append(
-  "<div class='my-table-container'><table><tbody id='search-results-new'></tbody></table></div>"
+  "<div class='my-table-container'><table><tbody id='search-results-new'></tbody></table></div>",
 );
 
 // append the search container to the body
-$('body').append(searchContainer);
+$("body").append(searchContainer);
 
 // listen for the input event on the search input
-searchInput.on('input', function () {
-  $('#search-results').empty();
-  $('#search-results-new').empty();
+searchInput.on("input", function () {
+  $("#search-results").empty();
+  $("#search-results-new").empty();
   teacherTable.clear();
   newTeacherTable.clear();
   // get the search query and split it by whitespace
   const query = $(this).val();
-  if (query === '') {
-    $('.my-teacher').removeClass('my-teacher');
+  if (query === "") {
+    $(".my-teacher").removeClass("my-teacher");
     return;
   }
   const teachers = parseTitleAndNameToArray(query);
@@ -601,44 +627,84 @@ searchInput.on('input', function () {
   findAllTeachersInEl(teachers, teacherContainer);
 
   const newTeachers = [];
-  $(teacherContainer)
-    .children()
-    .each(function () {
-      const nameEl = $(this).find('[data-name]').first();
-      const mailEl = $(this).find('[data-mail]').first();
-      const titleEl = $(this).find('[data-title]').first();
-      if (nameEl.length !== 1) {
-        return;
-      }
-      const name = $(nameEl).data('name');
-      const t = teachers.find((t) => t.name === name);
-      if (t) {
-        // found teacher
-        t.mail = $(mailEl).data('mail');
-        const oldTitle = t.title;
-        const newTitle = $(titleEl).data('title');
-        if (oldTitle !== newTitle) {
-          t.newTitle = newTitle;
-        }
-      } else {
-        // new teacher
-        const newT = {
-          name: $(nameEl).data('name'),
-          title: $(titleEl).data('title'),
-          mail: $(mailEl).data('mail'),
-          isFound: false,
-          newTitle: false,
-          isNew: true,
-        };
-        newTeachers.push(newT);
-      }
-    });
+  $("[data-name]").each(function () {
+    const nameEl = $(this);
+    const mailEl = nameEl.parents().has("[data-mail]").first().find(
+      "[data-mail]",
+    )
+      .first();
+    const titleEl = nameEl.parents().has("[data-title]").first().find(
+      "[data-title]",
+    )
+      .first();
 
-  $('#search-results').append(
-    '<tr><th>職位</th><th>新職位</th><th>姓名</th><th>信箱</th></tr>'
+    const name = $(nameEl).data("name");
+    $(nameEl).addClass(`my-classified ${name}-teacher`);
+    $(mailEl).addClass(`my-classified ${name}-teacher`);
+    $(titleEl).addClass(`my-classified ${name}-teacher`);
+
+    const t = teachers.find((t) => t.name === name);
+    if (t) {
+      // found teacher
+      t.mail = $(mailEl).data("mail");
+      const oldTitle = t.title;
+      const newTitle = $(titleEl).data("title");
+      if (oldTitle !== newTitle) {
+        t.newTitle = newTitle;
+      }
+    } else {
+      // new teacher
+      const newT = {
+        name: $(nameEl).data("name"),
+        title: $(titleEl).data("title"),
+        mail: $(mailEl).data("mail"),
+        isFound: false,
+        newTitle: false,
+        isNew: true,
+      };
+      newTeachers.push(newT);
+    }
+  });
+  // $(teacherContainer)
+  //   .children()
+  //   .each(function () {
+  //     const nameEl = $(this).find("[data-name]").first();
+  //     const mailEl = $(this).find("[data-mail]").first();
+  //     const titleEl = $(this).find("[data-title]").first();
+  //     if (nameEl.length !== 1) {
+  //       return;
+  //     }
+  //     const name = $(nameEl).data("name");
+  //     console.log(name);
+  //     const t = teachers.find((t) => t.name === name);
+  //     console.log(t);
+  //     if (t) {
+  //       // found teacher
+  //       t.mail = $(mailEl).data("mail");
+  //       const oldTitle = t.title;
+  //       const newTitle = $(titleEl).data("title");
+  //       if (oldTitle !== newTitle) {
+  //         t.newTitle = newTitle;
+  //       }
+  //     } else {
+  //       // new teacher
+  //       const newT = {
+  //         name: $(nameEl).data("name"),
+  //         title: $(titleEl).data("title"),
+  //         mail: $(mailEl).data("mail"),
+  //         isFound: false,
+  //         newTitle: false,
+  //         isNew: true,
+  //       };
+  //       newTeachers.push(newT);
+  //     }
+  //   });
+
+  $("#search-results").append(
+    "<tr><th>職位</th><th>新職位</th><th>姓名</th><th>信箱</th></tr>",
   );
-  $('#search-results-new').append(
-    '<tr><th>職位</th><th>姓名</th><th>信箱</th></tr>'
+  $("#search-results-new").append(
+    "<tr><th>職位</th><th>姓名</th><th>信箱</th></tr>",
   );
 
   teachers.forEach((t) => {
@@ -646,20 +712,24 @@ searchInput.on('input', function () {
 
     let newRow;
     // 職位(#t-name-title)       新職位(#t-name-title) 姓名(#t-name-name)       信箱(#t-name-mail)
-    newRow = $('<tr>').append(
-      $('<td>').append($('<a>').attr('href', `#${t.name}-title`).text(t.title)),
-      $('<td>').append(
-        $('<a>')
-          .attr('href', `#${t.name}-title`)
-          .text(t.newTitle ? t.newTitle : '')
+    newRow = $("<tr>").append(
+      $("<td>").attr("href", `#_${t.name}`).append(
+        $("<a>").text(t.title),
       ),
-      $('<td>').append($('<a>').attr('href', `#${t.name}-name`).text(t.name)),
-      $('<td>').append($('<a>').attr('href', `#${t.name}-mail`).text(t.mail))
+      $("<td>").attr("href", `#_${t.name}`).append(
+        $("<a>").text(t.newTitle ? t.newTitle : ""),
+      ),
+      $("<td>").append(
+        $("<a>").attr("href", `#_${t.name}`).text(t.name),
+      ),
+      $("<td>").append(
+        $("<a>").attr("href", `#_${t.name}`).text(t.mail),
+      ),
     );
     if (!t.isFound) {
-      newRow.addClass('not-found');
+      newRow.addClass("not-found");
     }
-    $('#search-results').append(newRow);
+    $("#search-results").append(newRow);
   });
 
   newTeachers.forEach((t) => {
@@ -667,30 +737,29 @@ searchInput.on('input', function () {
 
     let newRow;
     // 職位(#t-name-title)       新職位(#t-name-title) 姓名(#t-name-name)       信箱(#t-name-mail)
-    newRow = $('<tr>').append(
-      $('<td>').append($('<a>').attr('href', `#${t.name}-title`).text(t.title)),
-      $('<td>').append($('<a>').attr('href', `#${t.name}-name`).text(t.name)),
-      $('<td>').append($('<a>').attr('href', `#${t.name}-mail`).text(t.mail))
+    newRow = $("<tr>").append(
+      $("<td>").append(
+        $("<a>").attr("href", `#_${t.name}`).text(t.title),
+      ),
+      $("<td>").append(
+        $("<a>").attr("href", `#_${t.name}`).text(t.name),
+      ),
+      $("<td>").append(
+        $("<a>").attr("href", `#_${t.name}`).text(t.mail),
+      ),
     );
-    $('#search-results-new').append(newRow);
+    $("#search-results-new").append(newRow);
   });
-});
 
-// add a copy button next to each email
-$('*').each(function () {
-  const text = getText(this);
-  const results = text.match(mailRegex);
-  if (results === null || results.length === 0) {
-    return;
-  }
-
-  const email = results[0];
-  const copyButton = $('<button>複製</button>');
-  $(this).after(copyButton);
-
-  // add click event listener to copy button
-  copyButton.on('click', function () {
-    copyStringToClipboard(email);
+  $(".my-table-container a").click(function () {
+    $(".my-teacher").removeClass("now-focus");
+    const targetTeacherFakeId = $(this).attr("href");
+    const targetTName = targetTeacherFakeId.replace("#_", "");
+    $("html,body").animate({
+      scrollTop: $("#" + targetTName + "-teacher").offset().top -
+        $(window).height() / 2,
+    }, 100);
+    $("." + targetTName + "-teacher").addClass("now-focus");
   });
 });
 
@@ -702,34 +771,34 @@ function getText(el) {
     .end()
     .text()
     .trim()
-    .replace(/(\r\n|\n|\r)/gm, '');
+    .replace(/(\r\n|\n|\r)/gm, "");
 }
 
 function markTeacherName(keyword, matches) {
-  if (keyword === '') {
+  if (keyword === "") {
     return;
   }
   const regex = new RegExp(keyword);
-  const teacherElements = $('*').filter(function () {
+  const teacherElements = $("*").filter(function () {
     const text = getText(this);
     const isMatch = regex.test(text);
     if (isMatch) {
       matches.push(keyword);
-      $(this).attr('id', keyword);
+      $(this).attr("id", keyword);
     }
     return isMatch;
   });
-  teacherElements.addClass('my-teacher');
+  teacherElements.addClass("my-teacher");
 }
 
 function findClosestElMatchingRegex(regex, targetId) {
-  const targetEl = $('#' + targetId);
+  const targetEl = $("#" + targetId);
   if (targetEl.length === 0) {
     return null;
   }
 
   const matchingEls = $(
-    '*:not(html, body, meta, title, style, head, link)'
+    "*:not(html, body, meta, title, style, head, link)",
   ).filter(function () {
     const text = getText(this);
     return regex.test(text);
@@ -742,7 +811,7 @@ function findClosestElMatchingRegex(regex, targetId) {
   let minCommonParentsDepth = 0;
   let closestEl;
   matchingEls.each(function () {
-    const depth = $('#' + targetId)
+    const depth = $("#" + targetId)
       .parents()
       .has(this)
       .first()
@@ -761,7 +830,7 @@ function copyStringToClipboard(str) {
     function () {},
     function (err) {
       console.log(err);
-    }
+    },
   );
 }
 
@@ -770,7 +839,7 @@ function parseTitleAndNameToArray(str) {
   // space is 換行
 
   // cannot use /\s/, idk why
-  const rows = str.split(' ');
+  const rows = str.split(" ");
   const results = [];
   rows.forEach((r) => {
     const [title, name] = r.split(/\t/);
@@ -791,7 +860,7 @@ function findTeacherContainer(teachers) {
     return;
   }
   for (t of teachers) {
-    const regex = new RegExp('^' + t.name);
+    const regex = new RegExp("^" + t.name);
     const nameEl = findOneElByRegex(regex);
     if (nameEl) {
       nameEls.push(nameEl);
@@ -809,7 +878,7 @@ function findTeacherContainer(teachers) {
 
 function findOneElByRegex(regex) {
   const elements = $(
-    '*:not(html, body, meta, title, style, script, link, head)'
+    "*:not(html, body, meta, title, style, script, link, head)",
   ).toArray();
   for (el of elements) {
     const text = getText(el);
@@ -820,7 +889,7 @@ function findOneElByRegex(regex) {
   }
 }
 
-function testElisMatchRegex(el, regex) {
+function testElIsMatchRegex(el, regex) {
   const text = getText(el);
   const isMatch = regex.test(text);
   if (isMatch) {
@@ -832,31 +901,37 @@ function findAllTeachersInEl(teachers, el) {
   const newTeachers = [];
   $(el)
     .children()
-    .find('*')
+    .find("*")
     .each(function () {
       let isNewTeacher = true;
       let newT;
 
       let regex;
       let nameEl;
-      let name = '';
+      let name = "";
       for (let i = 0; i < surnames.length; i++) {
         const s = surnames[i];
         // exclude 管理、金融、農企、連絡、國立
         // 有問題：如 陳立洋 就不會 match
-        regex = new RegExp(`^${s}(?!理|融|企|絡|立)`);
-        nameEl = testElisMatchRegex(this, regex);
-        if (nameEl) {
+        regex = new RegExp(`^${s}`);
+        nameEl = testElIsMatchRegex(this, regex);
+
+        const excludeList = ["管理", "金融", "農企", "連絡", "國立", "國家", "公司"];
+        const name_ = getText(nameEl);
+        const isValidName = excludeList.every((s) => {
+          return !name_.includes(s);
+        });
+        if (nameEl && isValidName) {
           break;
         }
       }
       if (nameEl) {
         name = getText(nameEl);
-        name = name.replace(/（.*）/, '');
+        name = name.replace(/（.*）/, "");
         $(nameEl)
-          .attr('data-name', name)
-          .attr('id', `${name}-name`)
-          .addClass('my-teacher my-name');
+          .attr("data-name", name)
+          .attr("id", `${name}-teacher`)
+          .addClass("my-teacher my-name");
         // check if is old teacher
         for (const t of teachers) {
           const isMatch = t.name === name;
@@ -867,42 +942,45 @@ function findAllTeachersInEl(teachers, el) {
           }
         }
         if (isNewTeacher) {
-          $(nameEl).addClass('my-new-teacher');
+          $(nameEl).addClass("my-new-teacher");
         }
       }
 
       // mail
       regex = new RegExp(
-        '^.*([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,})$',
-        'i'
+        "^.*([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,})",
+        "i",
       );
-      const mailEl = testElisMatchRegex(this, regex);
+      const mailEl = testElIsMatchRegex(this, regex);
       let mail = getText(mailEl);
       if (mail) {
         regex = new RegExp(
-          '([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,})$',
-          'i'
+          "([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,})",
+          "i",
         );
         mail = mail.match(regex)[0];
       }
       $(mailEl)
-        .attr('data-mail', mail)
-        .attr('id', `${t.name}-mail`)
-        .addClass('my-teacher my-mail');
+        .attr("data-mail", mail)
+        .addClass("my-teacher my-mail")
+        .after(
+          $("<button>複製</button>").click(function () {
+            copyStringToClipboard(mail);
+          }),
+        );
 
       // title
-      regex = new RegExp('教授|副教授|講師|助理教授|系主任|校長|院長');
-      const titleEl = testElisMatchRegex(this, regex);
+      regex = new RegExp("教授|副教授|講師|助理教授|系主任|校長|院長");
+      const titleEl = testElIsMatchRegex(this, regex);
       const title = getText(titleEl);
       $(titleEl)
-        .attr('data-title', title)
-        .attr('id', `${t.name}-title`)
-        .addClass('my-teacher my-title');
-      if (name !== '' && isNewTeacher) {
+        .attr("data-title", title)
+        .addClass("my-teacher my-title");
+      if (name !== "" && isNewTeacher) {
         newT = {
           name,
-          mail: '',
-          title: '',
+          mail: "",
+          title: "",
           isFound: false,
           newTitle: false,
           isNew: true,
@@ -915,7 +993,30 @@ function findAllTeachersInEl(teachers, el) {
 }
 
 function diffDepth(node1, node2) {
-  return Math.abs($(a).parents().length - $(b).parents().length);
+  return Math.abs($(node1).parents().length - $(node2).parents().length);
+}
+
+function calCommonParentsLength(node1, node2) {
+  const depth = $(node1)
+    .parents()
+    .has(node2)
+    .first()
+    .parents().length;
+  return depth;
+}
+
+function findClosest(target, fromNodeSet) {
+  let maxDepth = 0;
+  let closestEl;
+  $(fromNodeSet).each(function () {
+    const depth = calCommonParentsLength(target, this);
+    if (depth > maxDepth) {
+      maxDepth = depth;
+      closestEl = this;
+    }
+  });
+
+  return closestEl;
 }
 
 // function getElementByXpath(path) {
