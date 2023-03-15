@@ -24,12 +24,32 @@ GM_addStyle(`
   100% { background-color: red; }
 }
 
+.my-highlightedd {
+  animation-name: cycle !important;
+  animation-duration: 4s !important;
+  animation-iteration-count: infinite !important;
+  color: #000 !important;
+  text-shadow: 1px 1px 2px #fff !important;
+}
+
 .my-highlighted {
-  animation-name: cycle;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
-  color: #000;
-  text-shadow: 1px 1px 2px #fff;
+  position: relative !important; /* Make the target element a positioning context */
+  display: inline-block !important; /* Ensure the target element is only as wide as its content */
+  z-index: 999 !important;
+}
+
+.my-highlighted::before {
+  content: "" !important; /* Add empty content to the pseudo-element */
+  z-index: 9999 !important;
+  display: block !important; /* Make the pseudo-element a block-level element */
+  position: absolute !important; /* Position the pseudo-element relative to the target element */
+  top: 50% !important; /* Vertically center the pseudo-element */
+  left: -60px !important; /* Position the pseudo-element 20 pixels to the left of the target element */
+  width: 64px !important; /* Set the width of the pseudo-element */
+  height: 24px !important; /* Set the height of the pseudo-element */
+  background-image: url("https://web.archive.org/web/20090829140816if_/http://geocities.com/chrisc512/files/point_right.gif") !important; /* Set the GIF as the background of the pseudo-element */
+  background-size: cover !important; /* Ensure the GIF fills the entire pseudo-element */
+  transform: translateY(-50%) !important; /* Vertically center the pseudo-element */
 }
 
 .teacher-search {
@@ -72,16 +92,8 @@ GM_addStyle(`
 }
 
 .my-teacher {
-    background: linear-gradient(90deg, black 50%, transparent 50%),
-                linear-gradient(90deg, black 50%, transparent 50%),
-                linear-gradient(0deg, black 50%, transparent 50%),
-                linear-gradient(0deg, black 50%, transparent 50%);
-    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-    background-size: 16px 4px, 16px 4px, 4px 16px, 4px 16px;
-    background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0px;
-    border-radius: 5px;
-    padding: 10px;
-    animation: dash 5s linear infinite;
+  background-color: #FFFF00;
+  font-weight: bold;
 }
 
 .my-new-teacher {
@@ -118,6 +130,7 @@ GM_addStyle(`
   position: relative;
   border-radius: var(--borderWidth);
   justify-content: center;
+  background-color: rgba(0, 0, 0, 0);
 }
 .now-focus:after {
   content: '';
@@ -514,13 +527,6 @@ const surnames = [
   "龔",
 ];
 
-// Select all elements containing the word "師資"
-var elements = $("*").filter(function () {
-  return /師資/.test($(this).clone().children().remove().end().text());
-});
-
-elements.addClass("my-highlighted");
-
 class ResultTable {
   constructor() {
     this.result = "";
@@ -616,14 +622,29 @@ searchInput.on("input", function () {
   $("#search-results-new").empty();
   teacherTable.clear();
   newTeacherTable.clear();
+
   // get the search query and split it by whitespace
   const query = $(this).val();
+
+  let teachers = [];
+  let teacherContainer;
   if (query === "") {
     $(".my-teacher").removeClass("my-teacher");
     return;
+  } else if (query.match(/\t/)) {
+    // find teacher container automatically
+    teachers = parseTitleAndNameToArray(query);
+    teacherContainer = findTeacherContainer(teachers);
+  } else {
+    console.log("queryselector")
+    console.log(query)
+    // query selector mode
+
+    // remove the !
+    const cssSelector = query;
+    teacherContainer = $(cssSelector);
   }
-  const teachers = parseTitleAndNameToArray(query);
-  const teacherContainer = findTeacherContainer(teachers);
+
   findAllTeachersInEl(teachers, teacherContainer);
 
   const newTeachers = [];
@@ -701,18 +722,19 @@ searchInput.on("input", function () {
   //   });
 
   $("#search-results").append(
-    "<tr><th>職位</th><th>新職位</th><th>姓名</th><th>信箱</th></tr>",
+    "<tr><th>已確認</th><th>職等</th><th>新職等</th><th>姓名</th><th>信箱</th></tr>",
   );
   $("#search-results-new").append(
-    "<tr><th>職位</th><th>姓名</th><th>信箱</th></tr>",
+    "<tr><th>已確認</th><th>職等</th><th>姓名</th><th>信箱</th></tr>",
   );
 
   teachers.forEach((t) => {
     teacherTable.addTeacher(t);
 
     let newRow;
-    // 職位(#t-name-title)       新職位(#t-name-title) 姓名(#t-name-name)       信箱(#t-name-mail)
+    // 職等(#t-name-title)       新職等(#t-name-title) 姓名(#t-name-name)       信箱(#t-name-mail)
     newRow = $("<tr>").append(
+      $("<td>").append("<input type='checkbox'></input>"),
       $("<td>").attr("href", `#_${t.name}`).append(
         $("<a>").text(t.title),
       ),
@@ -736,8 +758,9 @@ searchInput.on("input", function () {
     newTeacherTable.addNewTeacher(t);
 
     let newRow;
-    // 職位(#t-name-title)       新職位(#t-name-title) 姓名(#t-name-name)       信箱(#t-name-mail)
+    // 職等(#t-name-title)       新職等(#t-name-title) 姓名(#t-name-name)       信箱(#t-name-mail)
     newRow = $("<tr>").append(
+      $("<td>").append("<input type='checkbox'></input>"),
       $("<td>").append(
         $("<a>").attr("href", `#_${t.name}`).text(t.title),
       ),
@@ -764,6 +787,20 @@ searchInput.on("input", function () {
 });
 
 function getText(el) {
+  // const element = $(el).get(0);
+  // let text = "";
+  // if (!element) {
+  //   return "";
+  // }
+  //
+  // for (var i = 0; i < element.childNodes.length; ++i) {
+  //   if (element.childNodes[i].nodeType === Node.TEXT_NODE) {
+  //     text += element.childNodes[i].textContent;
+  //   }
+  // }
+  // return text;
+
+  // slower, but more accurate
   return $(el)
     .clone()
     .children()
@@ -856,9 +893,6 @@ function parseTitleAndNameToArray(str) {
 
 function findTeacherContainer(teachers) {
   const nameEls = [];
-  if (teachers.length < 2) {
-    return;
-  }
   for (t of teachers) {
     const regex = new RegExp("^" + t.name);
     const nameEl = findOneElByRegex(regex);
@@ -873,6 +907,8 @@ function findTeacherContainer(teachers) {
       .has(nameEls[nameEls.length - 1])
       .first();
     return container;
+  } else if (nameEls.length === 1) {
+    return nameEl[0];
   }
 }
 
@@ -911,15 +947,15 @@ function findAllTeachersInEl(teachers, el) {
       let name = "";
       for (let i = 0; i < surnames.length; i++) {
         const s = surnames[i];
-        // exclude 管理、金融、農企、連絡、國立
-        // 有問題：如 陳立洋 就不會 match
+
         regex = new RegExp(`^${s}`);
         nameEl = testElIsMatchRegex(this, regex);
 
-        const excludeList = ["管理", "金融", "農企", "連絡", "國立", "國家", "公司"];
-        const name_ = getText(nameEl);
+        // 避免"金融管理學院"被誤判成姓金的人
+        const excludeList = ["應用", "管理", "金融", "農企", "連絡", "國立", "國家", "公司"];
+        name = getText(nameEl);
         const isValidName = excludeList.every((s) => {
-          return !name_.includes(s);
+          return !name.includes(s);
         });
         if (nameEl && isValidName) {
           break;
@@ -951,6 +987,10 @@ function findAllTeachersInEl(teachers, el) {
         "^.*([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,})",
         "i",
       );
+      regex = new RegExp(
+        "^.*([a-z0-9]+(?:[._-][a-z0-9]+)*)@([a-z0-9]+(?:[.-][a-z0-9]+)*.[a-z]{2,}).*$",
+        "i",
+      );
       const mailEl = testElIsMatchRegex(this, regex);
       let mail = getText(mailEl);
       if (mail) {
@@ -964,7 +1004,7 @@ function findAllTeachersInEl(teachers, el) {
         .attr("data-mail", mail)
         .addClass("my-teacher my-mail")
         .after(
-          $("<button>複製</button>").click(function () {
+          $("<button>複製信箱</button>").click(function () {
             copyStringToClipboard(mail);
           }),
         );
@@ -975,7 +1015,13 @@ function findAllTeachersInEl(teachers, el) {
       const title = getText(titleEl);
       $(titleEl)
         .attr("data-title", title)
-        .addClass("my-teacher my-title");
+        .addClass("my-teacher my-title")
+        .after(
+          $("<button>複製職等</button>").click(function () {
+            copyStringToClipboard(mail);
+          }),
+        );
+
       if (name !== "" && isNewTeacher) {
         newT = {
           name,
@@ -992,74 +1038,30 @@ function findAllTeachersInEl(teachers, el) {
   return newTeachers;
 }
 
-function diffDepth(node1, node2) {
-  return Math.abs($(node1).parents().length - $(node2).parents().length);
-}
-
-function calCommonParentsLength(node1, node2) {
-  const depth = $(node1)
-    .parents()
-    .has(node2)
-    .first()
-    .parents().length;
-  return depth;
-}
-
-function findClosest(target, fromNodeSet) {
-  let maxDepth = 0;
-  let closestEl;
-  $(fromNodeSet).each(function () {
-    const depth = calCommonParentsLength(target, this);
-    if (depth > maxDepth) {
-      maxDepth = depth;
-      closestEl = this;
-    }
+function addCopyBtn() {
+  // add copy button to 專長-liked elements
+  $("div, span, p, h2, h3, h4, h5, h6").filter(function () {
+    // 至少兩個頓號
+    const text = getText(this);
+    return /.*、(.*、)+.*/.test(text);
+  }).after(function () {
+    const text = getText(this);
+    const btn = $("<button>複製專長</button>").click(function () {
+      copyStringToClipboard(text);
+    });
+    return btn;
   });
-
-  return closestEl;
 }
 
-// function getElementByXpath(path) {
-//   return document.evaluate(
-//     path,
-//     document,
-//     null,
-//     XPathResult.FIRST_ORDERED_NODE_TYPE,
-//     null,
-//   ).singleNodeValue;
-// }
+function highlightTeacherLink() {
+  $("a, button").filter(function () {
+    const text = getText(this);
+    return /.*(師資|系所成員|人員).*/.test(text);
+  }).addClass("my-highlighted");
+}
+
+addCopyBtn();
+highlightTeacherLink();
+
 //
-// function createXPathFromElement(elm) {
-//   var allNodes = document.getElementsByTagName("*");
-//   for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
-//     if (elm.hasAttribute("id")) {
-//       var uniqueIdCount = 0;
-//       for (var n = 0; n < allNodes.length; n++) {
-//         if (allNodes[n].hasAttribute("id") && allNodes[n].id == elm.id) {
-//           uniqueIdCount++;
-//         }
-//         if (uniqueIdCount > 1) break;
-//       }
-//       if (uniqueIdCount == 1) {
-//         segs.unshift('id("' + elm.getAttribute("id") + '")');
-//         return segs.join("/");
-//       } else {
-//         segs.unshift(
-//           elm.localName.toLowerCase() + '[@id="' + elm.getAttribute("id") +
-//             '"]',
-//         );
-//       }
-//     } else if (elm.hasAttribute("class")) {
-//       segs.unshift(
-//         elm.localName.toLowerCase() + '[@class="' + elm.getAttribute("class") +
-//           '"]',
-//       );
-//     } else {
-//       for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
-//         if (sib.localName == elm.localName) i++;
-//       }
-//       segs.unshift(elm.localName.toLowerCase() + "[" + i + "]");
-//     }
-//   }
-//   return segs.length ? "/" + segs.join("/") : null;
-// }
+// 講師 助理教授 副教授 教授 主任 院長 校長
