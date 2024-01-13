@@ -18,21 +18,23 @@
 
 // 👇👇👇 Please fill in your own account infomation.
 const ACCOUNT = {
-  email:    "Not set", // change "Not set" to your email, remember to keep the quotes
+  email: "Not set", // change "Not set" to your email, remember to keep the quotes
   password: "Not set", // change "Not set" to your password, remember to keep the quote
-}
+};
 
 // Check if the user really set their own account infomation
 if (ACCOUNT.email === "Not set" || ACCOUNT.password === "Not set") {
-  alert("Please set your own email and password in `Bookwalker TW Auto Login` userscript");
-}
+  alert(
+    "Please set your own email and password in `Bookwalker TW Auto Login` userscript",
+  );
+} else {
+  // If the login button is not exist, redirect uesr to the login page
+  const loginBtnExist = $(".topMemberItem.pcLogin").length;
+  if (loginBtnExist) {
+    window.location = "https://member.bookwalker.com.tw/login";
+  }
 
-// If the login button is not exist, redirect uesr to the login page
-const loginBtnExist = $('.topMemberItem.pcLogin').length
-if (loginBtnExist) {
-  window.location = "https://member.bookwalker.com.tw/login";
+  $("#email").val(ACCOUNT.email);
+  $("#password").val(ACCOUNT.password);
+  $("#login").click();
 }
-
-$('#email').val(ACCOUNT.email)
-$('#password').val(ACCOUNT.password)
-$('#login').click()
