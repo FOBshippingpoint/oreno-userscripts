@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "create": "deno run --allow-read --allow-write create-new-script.js",
+    "format": "deno fmt ."
+  }
+}

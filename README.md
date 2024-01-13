@@ -26,6 +26,14 @@ information.
 Add Violentmonkey/Greasemonkey/Tampermonkey web extension to your favorite
 browser, and click `install` link to add userscript.
 
+## Getting Started
+
+### Create a New Userscript
+
+```sh
+deno task create
+```
+
 ## Userscript
 
 ### Metadata Block
