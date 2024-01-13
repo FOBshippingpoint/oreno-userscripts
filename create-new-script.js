@@ -6,8 +6,7 @@ if (confirm("Do you want to create a new userscript?")) {
   const dirName = name.toLowerCase().replaceAll(" ", "-");
   const scriptName = name.toLowerCase().replaceAll(" ", "_") + ".user.js";
 
-  const content = `
-// ==UserScript==
+  const content = `// ==UserScript==
 // @name                  ${name}
 // @author                ${author}
 // @namespace             https://github.com/FOBshippingpoint/oreno-userscripts
@@ -16,7 +15,7 @@ if (confirm("Do you want to create a new userscript?")) {
 // @version               1.0
 // @icon                  https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/${dirName}/icon.png
 // @include               https://github.com
-// @updateURL             https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/${dirName}/${scriptName}.user.js
+// @updateURL             https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/${dirName}/${scriptName}
 // @supportURL            https://github.com/FOBshippingpoint/oreno-userscripts/issues
 // @homepageURL           https://github.com/FOBshippingpoint/oreno-userscripts#readme
 // ==/UserScript==
