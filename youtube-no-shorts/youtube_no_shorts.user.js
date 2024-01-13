@@ -15,4 +15,4 @@
 // @homepageURL           https://github.com/FOBshippingpoint/oreno-userscripts#readme
 // ==/UserScript==
 
-window.location = document.URL.replace('shorts/', 'watch?v=');
+window.location = document.URL.replace("shorts/", "watch?v=");

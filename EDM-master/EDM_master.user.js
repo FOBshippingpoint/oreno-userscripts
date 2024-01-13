@@ -543,7 +543,10 @@ function markAllInfo() {
       const text = getText(this);
       // expertise
       // 專長，至少兩個頓號或逗號或冒號 whatever
-      const expertise = getFirstMatchFromRegex(text, /.*[、,，](?:.*[、,，])+.*/);
+      const expertise = getFirstMatchFromRegex(
+        text,
+        /.*[、,，](?:.*[、,，])+.*/,
+      );
       if (expertise) {
         const expertiseEl = this;
         $(expertiseEl).after(createCopyBtn("專長", expertise));

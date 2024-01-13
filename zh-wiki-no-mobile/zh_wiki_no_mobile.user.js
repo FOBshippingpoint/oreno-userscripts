@@ -15,4 +15,4 @@
 // @run-at                document-start
 // ==/UserScript==
 
-window.location = document.URL.replace('.m', '');
+window.location = document.URL.replace(".m", "");
