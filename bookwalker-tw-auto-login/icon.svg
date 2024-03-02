@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg:svg
+   id="圖層_1"
+   data-name="圖層 1"
+   viewBox="0 0 30 30.000001"
+   version="1.1"
+   sodipodi:docname="bw_logo.svg"
+   width="30"
+   height="30"
+   inkscape:version="1.3.1 (91b66b0783, 2023-11-16)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="7.62"
+     inkscape:cx="-0.39370079"
+     inkscape:cy="13.188976"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1072"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="圖層_1" />
+  <svg:defs
+     id="defs1">
+    <svg:style
+       id="style1">.cls-1{fill:#129043;}.cls-2{fill:#b3b3b3;}.cls-3{fill:#4f080d;}.cls-4{fill:#1b94d3;}.cls-5{fill:#d61518;}.cls-6{fill:#221714;}.cls-7{fill:#fff;}</svg:style>
+  </svg:defs>
+  <svg:g
+     id="g15"
+     transform="translate(1.2582639,5.3145141)">
+    <svg:rect
+       class="cls-1"
+       x="18.603474"
+       y="0.10304341"
+       width="3.01"
+       height="19.16"
+       id="rect1" />
+    <svg:rect
+       class="cls-2"
+       x="12.733474"
+       y="0.10304341"
+       width="3.01"
+       height="19.16"
+       id="rect2" />
+    <svg:rect
+       class="cls-3"
+       x="6.8734736"
+       y="0.10304341"
+       width="3.01"
+       height="19.16"
+       id="rect3" />
+    <svg:rect
+       class="cls-4"
+       x="-18.361431"
+       y="3.8292139"
+       width="19.16"
+       height="3.01"
+       transform="rotate(-78.22)"
+       id="rect4" />
+    <svg:rect
+       class="cls-5"
+       x="24.473473"
+       y="0.10304341"
+       width="3.01"
+       height="19.16"
+       id="rect5" />
+  </svg:g>
+  <script
+     id="bw-fido2-page-script" />
+</svg:svg>
