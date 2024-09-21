@@ -4,7 +4,7 @@ if (confirm("Do you want to create a new userscript?")) {
   const description = prompt("description:", "A fresh userscript");
 
   const dirName = name.toLowerCase().replaceAll(" ", "-");
-  const scriptName = name.toLowerCase().replaceAll(" ", "_") + ".user.js";
+  const scriptName = dirName + ".user.js";
 
   const content = `// ==UserScript==
 // @name                  ${name}
@@ -23,7 +23,7 @@ if (confirm("Do you want to create a new userscript?")) {
 
   try {
     await Deno.mkdir(dirName);
-    await Deno.writeTextFile(dirName + "/" + scriptName, content);
+    await Deno.writeTextFile(dirName + "/" + dirName, content);
     console.log(
       "Successfully create new userscript in directory `" + dirName + "`",
     );
