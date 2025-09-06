@@ -43,7 +43,7 @@ GM_addStyle(`
     align-items: center;
     gap: 12px;
     transform: translateY(150%);
-    transition: transform 0.3s ease-out;
+    transition: transform 0.1s ease-out;
     z-index: 1000;
 }
 
@@ -104,3 +104,20 @@ async function copyCanvasToClipboard(canvas, backgroundColor = "white") {
     console.error("Failed to copy canvas image:", err);
   }
 }
+
+function observe(node, callback, options) {
+	const observer = new MutationObserver((mutations, ob) => {
+		const result = callback(mutations, ob);
+		if (result) disconnect();
+	});
+	observer.observe(node, {
+		childList: true,
+		subtree: true,
+		...options,
+	});
+	const disconnect = () => observer.disconnect();
+	return disconnect;
+};
+
+// Keep active so gartic won't kick you out
+observe(document, () => document.querySelector(".ic-yes")?.click());
