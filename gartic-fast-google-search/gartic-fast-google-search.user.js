@@ -99,7 +99,7 @@ async function copyCanvasToClipboard(canvas, backgroundColor = "white") {
         [blob.type]: blob,
       }),
     ]);
-    showNotification(canvas.toDataURL("image/png"));
+    showNotification(offscreenCanvas.toDataURL("image/png"));
   } catch (err) {
     console.error("Failed to copy canvas image:", err);
   }
