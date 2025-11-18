@@ -5,7 +5,7 @@
 // @namespace             https://github.com/FOBshippingpoint/oreno-userscripts
 // @grant                 GM_addStyle
 // @license               MIT
-// @version               2.0
+// @version               2.1
 // @icon                  https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/gartic-fast-google-search/icon.png
 // @updateURL             https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/gartic-fast-google-search/gartic-fast-google-search.user.js
 // @supportURL            https://github.com/FOBshippingpoint/oreno-userscripts/issues
@@ -22,12 +22,12 @@ notification.innerHTML = `
 document.body.appendChild(notification);
 
 function showNotification(imageDataUrl) {
-  const preview = notification.querySelector(".copy-preview");
-  preview.src = imageDataUrl;
-  notification.classList.add("show");
-  setTimeout(() => {
-    notification.classList.remove("show");
-  }, 3000);
+    const preview = notification.querySelector(".copy-preview");
+    preview.src = imageDataUrl;
+    notification.classList.add("show");
+    setTimeout(() => {
+        notification.classList.remove("show");
+    }, 3000);
 }
 
 GM_addStyle(`
@@ -68,56 +68,56 @@ GM_addStyle(`
 
 // Press F4 to open keyword in google image search.
 document.addEventListener("keydown", (e) => {
-  const word = document.querySelector(".word");
-  if (word && e.key === "F4") {
-    window.open(
-      "https://www.google.com/search?q=" +
-        encodeURIComponent(word.textContent) +
-        "&sclient=img&udm=2",
-    );
-  } else if (e.key === "F7") {
-    copyCanvasToClipboard(document.querySelector("canvas"));
-  }
+    const word = document.querySelector(".word");
+    if (word && e.key === "F4") {
+        window.open(
+            "https://www.google.com/search?q=" +
+                encodeURIComponent(word.textContent) +
+                "&sclient=img&udm=2",
+        );
+    } else if (e.key === "F7") {
+        copyCanvasToClipboard(document.querySelector("canvas"));
+    }
 });
 
 async function copyCanvasToClipboard(canvas, backgroundColor = "white") {
-  try {
-    const offscreenCanvas = document.createElement("canvas");
-    offscreenCanvas.width = canvas.width;
-    offscreenCanvas.height = canvas.height;
-    const ctx = offscreenCanvas.getContext("2d");
+    try {
+        const offscreenCanvas = document.createElement("canvas");
+        offscreenCanvas.width = canvas.width;
+        offscreenCanvas.height = canvas.height;
+        const ctx = offscreenCanvas.getContext("2d");
 
-    // Fill background color
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
-    ctx.drawImage(canvas, 0, 0);
-    const blob = await new Promise((resolve) =>
-      offscreenCanvas.toBlob(resolve),
-    );
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        [blob.type]: blob,
-      }),
-    ]);
-    showNotification(offscreenCanvas.toDataURL("image/png"));
-  } catch (err) {
-    console.error("Failed to copy canvas image:", err);
-  }
+        // Fill background color
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+        ctx.drawImage(canvas, 0, 0);
+        const blob = await new Promise((resolve) =>
+            offscreenCanvas.toBlob(resolve),
+        );
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                [blob.type]: blob,
+            }),
+        ]);
+        showNotification(offscreenCanvas.toDataURL("image/png"));
+    } catch (err) {
+        console.error("Failed to copy canvas image:", err);
+    }
 }
 
 function observe(node, callback, options) {
-	const observer = new MutationObserver((mutations, ob) => {
-		const result = callback(mutations, ob);
-		if (result) disconnect();
-	});
-	observer.observe(node, {
-		childList: true,
-		subtree: true,
-		...options,
-	});
-	const disconnect = () => observer.disconnect();
-	return disconnect;
-};
+    const observer = new MutationObserver((mutations, ob) => {
+        const result = callback(mutations, ob);
+        if (result) disconnect();
+    });
+    observer.observe(node, {
+        childList: true,
+        subtree: true,
+        ...options,
+    });
+    const disconnect = () => observer.disconnect();
+    return disconnect;
+}
 
 // Keep active so gartic won't kick you out
 observe(document, () => document.querySelector(".ic-yes")?.click());
