@@ -5,7 +5,7 @@
 // @namespace             https://github.com/FOBshippingpoint/oreno-userscripts
 // @grant                 GM_addStyle
 // @license               MIT
-// @version               2.2
+// @version               2.3
 // @icon                  https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/gartic-fast-google-search/icon.png
 // @updateURL             https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/gartic-fast-google-search/gartic-fast-google-search.user.js
 // @supportURL            https://github.com/FOBshippingpoint/oreno-userscripts/issues
@@ -107,6 +107,6 @@ async function copyCanvasToClipboard(canvas, backgroundColor = "white") {
 }
 
 // Keep active so gartic won't kick you out
-setTimeout(() => {
+setInterval(() => {
     document.querySelector(".ic-yes")?.click()
 }, 100);
