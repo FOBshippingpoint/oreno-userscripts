@@ -5,30 +5,12 @@
 // @namespace             https://github.com/FOBshippingpoint/oreno-userscripts
 // @grant                 GM_addStyle
 // @license               MIT
-// @version               2.1
+// @version               2.2
 // @icon                  https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/gartic-fast-google-search/icon.png
 // @updateURL             https://raw.githubusercontent.com/FOBshippingpoint/oreno-userscripts/main/gartic-fast-google-search/gartic-fast-google-search.user.js
 // @supportURL            https://github.com/FOBshippingpoint/oreno-userscripts/issues
 // @homepageURL           https://github.com/FOBshippingpoint/oreno-userscripts#readme
 // ==/UserScript==
-
-// Create notification container
-const notification = document.createElement("div");
-notification.className = "copy-notification";
-notification.innerHTML = `
-    <img class="copy-preview" alt="Copied frame">
-    <p class="copy-notification-text">已複製</p>
-`;
-document.body.appendChild(notification);
-
-function showNotification(imageDataUrl) {
-    const preview = notification.querySelector(".copy-preview");
-    preview.src = imageDataUrl;
-    notification.classList.add("show");
-    setTimeout(() => {
-        notification.classList.remove("show");
-    }, 3000);
-}
 
 GM_addStyle(`
 
@@ -65,6 +47,25 @@ GM_addStyle(`
 }
 
 `);
+
+// Create notification container
+const notification = document.createElement("div");
+notification.className = "copy-notification";
+notification.innerHTML = `
+    <img class="copy-preview" alt="Copied frame">
+    <p class="copy-notification-text">已複製</p>
+`;
+document.body.appendChild(notification);
+
+function showNotification(imageDataUrl) {
+    const preview = notification.querySelector(".copy-preview");
+    preview.src = imageDataUrl;
+    notification.classList.add("show");
+    setTimeout(() => {
+        notification.classList.remove("show");
+    }, 3000);
+}
+
 
 // Press F4 to open keyword in google image search.
 document.addEventListener("keydown", (e) => {
@@ -105,19 +106,7 @@ async function copyCanvasToClipboard(canvas, backgroundColor = "white") {
     }
 }
 
-function observe(node, callback, options) {
-    const observer = new MutationObserver((mutations, ob) => {
-        const result = callback(mutations, ob);
-        if (result) disconnect();
-    });
-    observer.observe(node, {
-        childList: true,
-        subtree: true,
-        ...options,
-    });
-    const disconnect = () => observer.disconnect();
-    return disconnect;
-}
-
 // Keep active so gartic won't kick you out
-observe(document, () => document.querySelector(".ic-yes")?.click());
+setTimeout(() => {
+    document.querySelector(".ic-yes")?.click()
+}, 100);
